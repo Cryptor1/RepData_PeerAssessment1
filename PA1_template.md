@@ -6,14 +6,12 @@ output:
 ---
 
 
-```{r global_options, message=FALSE, echo=FALSE}
-library(knitr)
-opts_chunk$set(message = FALSE, fig.cap = "")
-```
+
 
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 library(dplyr)
 
 unzipped_file_directory <- tempdir()
@@ -32,7 +30,8 @@ unlink(unzipped_file_directory)
 
 
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 library(ggplot2)
 library(scales)
 
@@ -52,35 +51,81 @@ ggplot(data = steps_per_day) +
 	scale_x_continuous(labels = comma) +
 	scale_y_continuous(breaks = pretty_breaks()) +
 	labs(x = "total steps", y = "number of days")
+```
 
+![](figure/unnamed-chunk-2-1.png)
+
+```r
 mean(steps_per_day$steps) %>% round()
+```
+
+```
+## [1] 10766
+```
+
+```r
 median(steps_per_day$steps)
+```
+
+```
+## [1] 10765
 ```
 
 
 ## What is the average daily activity pattern?
-```{r}
+
+```r
 mean_steps_per_interval <- group_by(.data = activity_data_set, interval) %>%
 	summarise(steps = mean(steps, na.rm = TRUE) %>% round())
 
 ggplot(data = mean_steps_per_interval) +
 	geom_line(mapping = aes(x = interval, y = steps))
+```
 
+![](figure/unnamed-chunk-3-1.png)
+
+```r
 max_steps_index <- which.max(mean_steps_per_interval$steps)
 ## 5-minute interval containing the biggest steps value
 mean_steps_per_interval$interval[max_steps_index]
+```
+
+```
+## [1] 835
+```
+
+```r
 ## The biggest steps value
 mean_steps_per_interval$steps[max_steps_index]
 ```
 
+```
+## [1] 206
+```
+
 
 ## Imputing missing values
-```{r}
+
+```r
 ## Which variables contain NAs
 sapply(activity_data_set, FUN = function(variable) anyNA(variable))
+```
+
+```
+##    steps     date interval 
+##     TRUE    FALSE    FALSE
+```
+
+```r
 ## How many NAs in the 'steps' variable
 activity_data_set$steps[is.na(activity_data_set$steps)] %>% length()
+```
 
+```
+## [1] 2304
+```
+
+```r
 median_steps_per_interval <-
 	filter(.data = activity_data_set, !is.na(steps)) %>%
 	group_by(interval) %>%
@@ -114,14 +159,30 @@ ggplot(data = steps_per_day_NAs_filled) +
 	scale_x_continuous(labels = comma) +
 	scale_y_continuous(breaks = pretty_breaks()) +
 	labs(x = "total steps", y = "number of days")
+```
 
+![](figure/unnamed-chunk-4-1.png)
+
+```r
 mean(steps_per_day_NAs_filled$steps) %>% round()
+```
+
+```
+## [1] 9504
+```
+
+```r
 median(steps_per_day_NAs_filled$steps)
+```
+
+```
+## [1] 10395
 ```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 library(chron)
 
 day_type <-
@@ -142,3 +203,5 @@ ggplot(data = mean_steps_per_day_type) +
 	geom_line(mapping = aes(x = interval, y = steps)) +
 	facet_grid(facets = day_type ~ .)
 ```
+
+![](figure/unnamed-chunk-5-1.png)
