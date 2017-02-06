@@ -24,8 +24,6 @@ unzip(zipfile = "activity.zip",
 activity_data_set <-
 	read.csv(paste(unzipped_file_directory, activity_file_name, sep = "/")) %>%
 	tbl_df()
-
-unlink(unzipped_file_directory)
 ```
 
 
@@ -205,3 +203,11 @@ ggplot(data = mean_steps_per_day_type) +
 ```
 
 ![](figure/unnamed-chunk-5-1.png)
+
+
+### Post-processing
+
+```r
+## Remove temporary folder created when loading and preprocessing the data
+unlink(unzipped_file_directory, recursive = TRUE)
+```

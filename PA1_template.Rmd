@@ -26,8 +26,6 @@ unzip(zipfile = "activity.zip",
 activity_data_set <-
 	read.csv(paste(unzipped_file_directory, activity_file_name, sep = "/")) %>%
 	tbl_df()
-
-unlink(unzipped_file_directory)
 ```
 
 
@@ -141,4 +139,11 @@ mean_steps_per_day_type <-
 ggplot(data = mean_steps_per_day_type) +
 	geom_line(mapping = aes(x = interval, y = steps)) +
 	facet_grid(facets = day_type ~ .)
+```
+
+
+### Post-processing
+```{r post_processing}
+## Remove temporary folder created when loading and preprocessing the data
+unlink(unzipped_file_directory, recursive = TRUE)
 ```
